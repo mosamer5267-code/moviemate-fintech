@@ -1,18 +1,21 @@
 const express = require("express");
-const { getAllMovies, searchMovies, getMovieDetails, getSimilarMovies } = require("../controllers/movieController");
-
 const router = express.Router();
 
+const movieController = require("../controllers/movieController");
+
 // LIST ALL MOVIES
-router.get("/", getAllMovies);
+router.get("/", movieController.getAllMovies);
 
-// SEARCH MOVIES
-router.get("/search", searchMovies);
+// ADD MOVIE
+router.post("/", movieController.addMovie);
 
-// GET FULL MOVIE INFO
-router.get("/:id", getMovieDetails);
+// GET ONE MOVIE
+router.get("/:id", movieController.getMovieById);
 
-// GET RECOMMENDATIONS
-router.get("/:id/similar", getSimilarMovies);
+// UPDATE MOVIE
+router.put("/:id", movieController.updateMovie);
+
+// DELETE MOVIE
+router.delete("/:id", movieController.deleteMovie);
 
 module.exports = router;

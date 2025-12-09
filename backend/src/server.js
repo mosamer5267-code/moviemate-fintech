@@ -1,8 +1,13 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 
-const connectDB = require("./db");
+// ⚡ Load .env correctly
+require("dotenv").config({ path: "../.env" });
+
+console.log("🔍 Loaded MONGO_URI =", process.env.MONGO_URI);
+
+const connectDB = require("../db");
+
 const authRoutes = require("./routes/authRoutes");
 const movieRoutes = require("./routes/movieRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
@@ -10,7 +15,6 @@ const favoriteRoutes = require("./routes/favoriteRoutes");
 console.log("authRoutes =", authRoutes);
 console.log("movieRoutes =", movieRoutes);
 console.log("favoriteRoutes =", favoriteRoutes);
-
 
 const app = express();
 
