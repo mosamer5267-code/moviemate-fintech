@@ -1,97 +1,113 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios";
+import SimilarMovies from "../components/SimilarMovies";
 
 function MovieDetails() {
   const { id } = useParams();
+
   const [movie, setMovie] = useState(null);
   const [rating, setRating] = useState("");
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [message, setMessage] = useState("");
 
+  // Fetch movie
   useEffect(() => {
-    fetchMovie();
-    checkFavorite();
-  }, []);
-
-  const fetchMovie = async () => {
-    try {
+    async function fetchMovie() {
       const res = await api.get(`/movies/${id}`);
       setMovie(res.data);
-    } catch {
-      setMessage("Failed to load movie");
     }
-  };
+    fetchMovie();
+  }, [id]);
 
-  const checkFavorite = async () => {
-    try {
-      const res = await api.get("/favorites");
-      const exists = res.data.some((m) => m._id === id);
-      setIsFavorite(exists);
-    } catch {
-      // user not logged in → ignore
+  // Fetch comments
+  useEffect(() => {
+    async function fetchComments() {
+      const res = await api.get(`/movies/${id}/comments`);
+      setComments(res.data);
     }
-  };
+    fetchComments();
+  }, [id]);
 
-  const toggleFavorite = async () => {
-    try {
-      if (isFavorite) {
-        await api.delete(`/favorites/${id}`);
-        setIsFavorite(false);
-      } else {
-        await api.post(`/favorites/${id}`);
-        setIsFavorite(true);
-      }
-    } catch {
-      alert("Login required to favorite movies");
+  // Rate movie
+  async function submitRating() {
+    await api.post(`/movies/${id}/rate`, { rating });
+    alert("Rating submitted");
+  }
+
+  // Add / Remove favorite
+  async function toggleFavorite() {
+    if (isFavorite) {
+      await api.delete(`/favorites/${id}`);
+      setIsFavorite(false);
+    } else {
+      await api.post(`/favorites/${id}`);
+      setIsFavorite(true);
     }
-  };
+  }
 
-  const submitRating = async () => {
-    try {
-      await api.post(`/movies/${id}/rate`, { rating: Number(rating) });
-      fetchMovie();
-      setRating("");
-    } catch {
-      alert("Failed to submit rating");
-    }
-  };
+  // Submit comment
+  async function submitComment() {
+    const res = await api.post(`/movies/${id}/comments`, {
+      text: comment,
+    });
+    setComments([...comments, res.data]);
+    setComment("");
+  }
 
-  if (!movie) return null;
+  if (!movie) return <p>Loading...</p>;
 
   return (
-    <div className="movie-details">
+    <div className="page">
       <h1>{movie.title}</h1>
-      <p className="description">{movie.description}</p>
+      <p>{movie.description}</p>
 
       <div className="tags">
-        {movie.genres?.map((g) => (
+        {movie.genres.map((g) => (
           <span key={g} className="tag">{g}</span>
         ))}
       </div>
 
-      <p className="rating">
-        ⭐ {movie.averageRating.toFixed(1)} / 5
-      </p>
-
-      <button
-        className={isFavorite ? "btn danger" : "btn primary"}
-        onClick={toggleFavorite}
-      >
-        {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-      </button>
-
-      <div className="rate-box">
+      {/* ⭐ RATING */}
+      <div className="section">
         <select value={rating} onChange={(e) => setRating(e.target.value)}>
           <option value="">Rate movie</option>
           {[1,2,3,4,5].map(n => (
             <option key={n} value={n}>{n}</option>
           ))}
         </select>
-        <button className="btn primary" onClick={submitRating}>
-          Submit Rating
+        <button onClick={submitRating}>Submit Rating</button>
+      </div>
+
+      {/* ❤️ FAVORITE */}
+      <div className="section">
+        <button onClick={toggleFavorite} className="favorite-btn">
+          {isFavorite ? "Remove from Favorites ❤️" : "Add to Favorites 🤍"}
         </button>
       </div>
+
+      {/* 💬 COMMENTS */}
+      <div className="section">
+        <h3>Comments</h3>
+
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Write a comment..."
+        />
+
+        <button onClick={submitComment}>Post Comment</button>
+
+        <ul className="comments">
+          {comments.map((c, i) => (
+            <li key={i}>{c.text}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 🔁 SIMILAR MOVIES */}
+      <SimilarMovies movieId={id} genres={movie.genres} />
     </div>
   );
 }
