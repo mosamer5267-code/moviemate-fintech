@@ -1,45 +1,38 @@
 const mongoose = require("mongoose");
 
-const ratingSchema = new mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+    text: {
+      type: String,
+      required: true,
     },
-    value: {
-      type: Number,
-      min: 1,
-      max: 5,
-      required: true
-    }
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  { _id: false }
+  { _id: true }
 );
 
 const movieSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    description: {
-      type: String,
-      default: ""
-    },
-    genres: {
-      type: [String],
-      default: []
-    },
+    title: String,
+    description: String,
+    genres: [String],
+
     ratings: {
-      type: [ratingSchema],
-      default: []
+      type: [Number],
+      default: [],
     },
     averageRating: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
+
+    comments: {
+      type: [commentSchema],
+      default: [],
+    },
   },
   { timestamps: true }
 );

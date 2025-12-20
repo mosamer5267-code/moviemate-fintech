@@ -1,24 +1,25 @@
 const express = require("express");
 const router = express.Router();
 
-const authMiddleware = require("../middleware/authMiddleware");
 const {
-  getAllMovies,   // 👈 ADD THIS
+  getAllMovies,
   getMovieById,
+  createMovie,
   rateMovie,
-  createMovie
+  getComments,
+  addComment,
 } = require("../controllers/movieController");
 
-// GET ALL MOVIES ✅
+// movies
 router.get("/", getAllMovies);
-
-// CREATE movie
 router.post("/", createMovie);
-
-// GET movie details
 router.get("/:id", getMovieById);
 
-// RATE movie (logged-in users only)
-router.post("/:id/rate", authMiddleware, rateMovie);
+// ratings (no auth)
+router.post("/:id/rate", rateMovie);
+
+// comments (no auth)
+router.get("/:id/comments", getComments);
+router.post("/:id/comments", addComment);
 
 module.exports = router;

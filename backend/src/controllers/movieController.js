@@ -1,5 +1,15 @@
 const Movie = require("../models/Movie");
 
+// GET ALL MOVIES
+exports.getAllMovies = async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    res.json(movies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // GET MOVIE BY ID
 exports.getMovieById = async (req, res) => {
   try {
@@ -13,46 +23,6 @@ exports.getMovieById = async (req, res) => {
   }
 };
 
-// RATE MOVIE (logged-in users only)
-exports.rateMovie = async (req, res) => {
-  try {
-    const { rating } = req.body;
-    const userId = req.userId;
-
-    if (!rating || rating < 1 || rating > 5) {
-      return res.status(400).json({ message: "Rating must be 1–5" });
-    }
-
-    const movie = await Movie.findById(req.params.id);
-    if (!movie) {
-      return res.status(404).json({ message: "Movie not found" });
-    }
-
-    const existingRating = movie.ratings.find(
-      r => r.user.toString() === userId
-    );
-
-    if (existingRating) {
-      existingRating.value = rating;
-    } else {
-      movie.ratings.push({ user: userId, value: rating });
-    }
-
-    // calculate average rating
-    const sum = movie.ratings.reduce((acc, r) => acc + r.value, 0);
-    movie.averageRating = sum / movie.ratings.length;
-
-    await movie.save();
-
-    res.json({
-      message: "Rating saved",
-      averageRating: movie.averageRating,
-      ratingsCount: movie.ratings.length
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 // CREATE MOVIE
 exports.createMovie = async (req, res) => {
   try {
@@ -63,11 +33,68 @@ exports.createMovie = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
-// GET ALL MOVIES
-exports.getAllMovies = async (req, res) => {
+
+// RATE MOVIE (NO AUTH)
+exports.rateMovie = async (req, res) => {
   try {
-    const movies = await Movie.find();
-    res.json(movies);
+    const { rating } = req.body;
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+
+    movie.ratings.push(rating);
+    const sum = movie.ratings.reduce((acc, r) => acc + r, 0);
+    movie.averageRating = sum / movie.ratings.length;
+
+    await movie.save();
+
+    res.json({
+      message: "Rating submitted",
+      averageRating: movie.averageRating,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// GET COMMENTS (NO AUTH)
+exports.getComments = async (req, res) => {
+  try {
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+    res.json(movie.comments || []);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ADD COMMENT (NO AUTH)
+exports.addComment = async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ message: "Comment text required" });
+    }
+
+    const movie = await Movie.findById(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
+    }
+
+    const newComment = { text };
+    movie.comments.push(newComment);
+    await movie.save();
+
+    res.status(201).json(newComment);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
