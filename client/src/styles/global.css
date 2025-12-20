@@ -1,139 +1,61 @@
-:root {
-  --bg: #0b0f19;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-2: rgba(255, 255, 255, 0.09);
-  --border: rgba(255, 255, 255, 0.10);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.65);
-  --brand: #7c3aed;
-  --brand-2: #22c55e;
-  --danger: #ef4444;
-  --shadow: 0 16px 40px rgba(0,0,0,0.45);
-  --radius: 18px;
-  --radius-sm: 12px;
+.movie-details {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: linear-gradient(135deg, #1f1c2c, #2a2a72);
+  border-radius: 20px;
+  color: white;
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: radial-gradient(1200px 600px at 20% 10%, rgba(124,58,237,0.25), transparent 60%),
-              radial-gradient(900px 500px at 80% 20%, rgba(34,197,94,0.18), transparent 55%),
-              radial-gradient(900px 700px at 40% 90%, rgba(59,130,246,0.12), transparent 60%),
-              var(--bg);
-  color: var(--text);
+.description {
+  opacity: 0.9;
+  margin-bottom: 15px;
 }
 
-a { color: inherit; text-decoration: none; }
-a:hover { opacity: 0.95; }
-
-.container {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 24px 16px 56px;
+.tags {
+  margin-bottom: 10px;
 }
 
-.card {
-  background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.03));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+.tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-right: 8px;
+  font-size: 0.85rem;
 }
 
-.cardBody { padding: 18px; }
-
-.grid {
-  display: grid;
-  gap: 16px;
-}
-@media (min-width: 820px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (min-width: 1080px) {
-  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.rating {
+  margin: 15px 0;
+  font-size: 1.1rem;
 }
 
-.h1 {
-  font-size: 34px;
-  line-height: 1.1;
-  margin: 0 0 10px;
-  letter-spacing: -0.02em;
-}
-.h2 {
-  font-size: 18px;
-  margin: 0 0 8px;
-  letter-spacing: -0.01em;
-}
-.p { margin: 0; color: var(--muted); line-height: 1.5; }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.85);
-  font-size: 12px;
+.rate-box {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
 }
 
-.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-.spacer { height: 18px; }
-
-.input, .select, .textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 12px;
-  color: var(--text);
-  padding: 10px 12px;
-  outline: none;
-}
-.textarea { min-height: 90px; resize: vertical; }
-.input:focus, .select:focus, .textarea:focus {
-  border-color: rgba(124,58,237,0.55);
-  box-shadow: 0 0 0 4px rgba(124,58,237,0.14);
+select {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
 }
 
 .btn {
-  border: 0;
+  padding: 10px 18px;
   border-radius: 12px;
-  padding: 10px 14px;
+  border: none;
   cursor: pointer;
-  background: rgba(255,255,255,0.10);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.14);
-  transition: transform 0.06s ease, background 0.2s ease, opacity 0.2s ease;
-}
-.btn:hover { background: rgba(255,255,255,0.14); }
-.btn:active { transform: translateY(1px); }
-
-.btnPrimary {
-  background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.75));
-  border: 1px solid rgba(124,58,237,0.55);
-}
-.btnPrimary:hover { opacity: 0.95; }
-
-.btnDanger {
-  background: rgba(239,68,68,0.18);
-  border: 1px solid rgba(239,68,68,0.45);
-}
-.btnDanger:hover { background: rgba(239,68,68,0.24); }
-
-.hr {
-  border: 0;
-  border-top: 1px solid rgba(255,255,255,0.10);
-  margin: 18px 0;
+  font-weight: 600;
 }
 
-.small { font-size: 12px; color: var(--muted); }
-.toast {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.12);
+.btn.primary {
+  background: #6c63ff;
+  color: white;
+}
+
+.btn.danger {
+  background: #ff4d4d;
+  color: white;
 }
