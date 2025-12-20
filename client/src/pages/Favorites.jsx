@@ -5,12 +5,10 @@ import api from "../api/axios";
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/login");
       return;
@@ -19,10 +17,9 @@ function Favorites() {
     const fetchFavorites = async () => {
       try {
         const res = await api.get("/favorites");
-        setFavorites(res.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load favorites");
+        setFavorites(res.data || []);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
@@ -34,49 +31,74 @@ function Favorites() {
   const removeFavorite = async (movieId) => {
     try {
       await api.delete(`/favorites/${movieId}`);
-      setFavorites((prev) =>
-        prev.filter((movie) => movie._id !== movieId)
-      );
-    } catch (err) {
-      console.error(err);
+      setFavorites((prev) => prev.filter((m) => m._id !== movieId));
+    } catch (e) {
+      console.error(e);
       alert("Failed to remove favorite");
     }
   };
 
-  if (loading) return <p>Loading favorites...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
-    <div>
-      <h1>Your Favorites ❤️</h1>
+    <div className="container">
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <div>
+          <h1 className="h1">Favorites</h1>
+          <p className="p">Your saved movies in one place.</p>
+        </div>
+        <span className="badge">{favorites.length} saved</span>
+      </div>
 
-      {favorites.length === 0 ? (
-        <p>No favorite movies yet.</p>
+      <div className="spacer" />
+
+      {loading ? (
+        <div className="card">
+          <div className="cardBody">Loading favorites…</div>
+        </div>
+      ) : favorites.length === 0 ? (
+        <div className="card">
+          <div className="cardBody">No favorites yet.</div>
+        </div>
       ) : (
-        <ul>
-          {favorites.map((movie) => (
-            <li key={movie._id} style={{ marginBottom: "20px" }}>
-              <Link to={`/movies/${movie._id}`}>
-                <strong>{movie.title}</strong>
-              </Link>
+        <div className="grid">
+          {favorites.map((m) => (
+            <div key={m._id} className="card">
+              <div className="cardBody">
+                <div className="row" style={{ justifyContent: "space-between" }}>
+                  <Link to={`/movies/${m._id}`} className="h2" style={{ margin: 0 }}>
+                    {m.title}
+                  </Link>
+                  <button
+                    className="btn btnDanger"
+                    onClick={() => removeFavorite(m._id)}
+                  >
+                    Remove
+                  </button>
+                </div>
 
-              <p>{movie.description}</p>
+                <div className="spacer" style={{ height: 10 }} />
+                <p className="p">
+                  {m.description
+                    ? m.description.slice(0, 110) +
+                      (m.description.length > 110 ? "…" : "")
+                    : "No description."}
+                </p>
 
-              <button
-                onClick={() => removeFavorite(movie._id)}
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                Remove ❌
-              </button>
-            </li>
+                {!!(m.genres || []).length && (
+                  <>
+                    <div className="spacer" style={{ height: 12 }} />
+                    <div className="row">
+                      {m.genres.slice(0, 3).map((g) => (
+                        <span className="badge" key={g}>
+                          {g}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
