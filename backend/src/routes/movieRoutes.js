@@ -8,18 +8,20 @@ const {
   rateMovie,
   getComments,
   addComment,
+  getSimilarMovies,
 } = require("../controllers/movieController");
 
-// movies
 router.get("/", getAllMovies);
 router.post("/", createMovie);
 router.get("/:id", getMovieById);
 
-// ratings (no auth)
 router.post("/:id/rate", rateMovie);
 
-// comments (no auth)
+// comments
 router.get("/:id/comments", getComments);
 router.post("/:id/comments", addComment);
+
+// similar movies
+router.get("/:id/similar", getSimilarMovies);
 
 module.exports = router;
