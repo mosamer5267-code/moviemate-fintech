@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
 function Login() {
@@ -19,12 +19,11 @@ function Login() {
         password,
       });
 
-      // ✅ Save token
+      // Save token
       localStorage.setItem("token", res.data.token);
 
-      // ✅ Redirect to homepage
+      // Redirect to homepage
       navigate("/", { replace: true });
-
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
@@ -54,6 +53,11 @@ function Login() {
         />
 
         <button type="submit">Login</button>
+
+        {/* Sign up link */}
+        <p className="authSwitch">
+          Don’t have an account? <Link to="/signup">Sign up</Link>
+        </p>
       </form>
     </div>
   );

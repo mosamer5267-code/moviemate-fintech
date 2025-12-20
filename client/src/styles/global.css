@@ -289,3 +289,57 @@ textarea {
   background: rgba(255,255,255,0.07);
   border: 1px solid rgba(255,255,255,0.12);
 }
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.authCard h1 {
+  margin-bottom: 20px;
+}
+
+.authCard input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+}
+
+.authCard button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.authSwitch {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.authSwitch a {
+  color: #a29bfe;
+  text-decoration: none;
+}
+
+.error {
+  color: #ff7675;
+  margin-bottom: 10px;
+}

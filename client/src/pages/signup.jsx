@@ -5,72 +5,100 @@ import api from "../api/axios";
 function Signup() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      const res = await api.post("/auth/signup", {
-        name,
-        email,
-        password,
+      await api.post("/auth/register", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        phoneNumber: form.phoneNumber,
       });
 
-      // save token
-      localStorage.setItem("token", res.data.token);
-
-      // redirect to search
-      navigate("/search");
+      // After signup → go to login
+      navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed");
     }
-  };
+  }
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto" }}>
-      <h1>Sign Up</h1>
+    <div className="authPage">
+      <form className="authCard" onSubmit={handleSubmit}>
+        <h1>Create Account</h1>
 
-      <form onSubmit={handleSubmit}>
+        {error && <p className="error">{error}</p>}
+
         <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          name="name"
+          placeholder="Full Name"
+          value={form.name}
+          onChange={handleChange}
           required
         />
-        <br />
 
         <input
+          name="email"
           type="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={handleChange}
           required
         />
-        <br />
 
         <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={form.phoneNumber}
+          onChange={handleChange}
           required
         />
-        <br />
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          required
+        />
 
         <button type="submit">Sign Up</button>
+
+        <p className="authSwitch">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
     </div>
   );
 }
