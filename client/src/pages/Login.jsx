@@ -9,7 +9,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
@@ -19,54 +19,42 @@ function Login() {
         password,
       });
 
-      // Save token
+      // ✅ Save token
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Redirect after login
-      navigate("/search");
+      // ✅ Redirect to homepage
+      navigate("/", { replace: true });
+
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Login failed. Try again."
-      );
+      setError(err.response?.data?.message || "Login failed");
     }
-  };
+  }
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto" }}>
-      <h2>Login</h2>
+    <div className="authPage">
+      <form className="authCard" onSubmit={handleSubmit}>
+        <h1>Login</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        {error && <p className="error">{error}</p>}
 
-        <div style={{ marginTop: "10px" }}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        <button style={{ marginTop: "15px" }} type="submit">
-          Login
-        </button>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button type="submit">Login</button>
       </form>
-
-      {error && (
-        <p style={{ color: "red", marginTop: "10px" }}>
-          {error}
-        </p>
-      )}
     </div>
   );
 }
