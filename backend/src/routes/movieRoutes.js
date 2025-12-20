@@ -1,21 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-const movieController = require("../controllers/movieController");
+const authMiddleware = require("../middleware/authMiddleware");
+const {
+  getAllMovies,   // 👈 ADD THIS
+  getMovieById,
+  rateMovie,
+  createMovie
+} = require("../controllers/movieController");
 
-// LIST ALL MOVIES
-router.get("/", movieController.getAllMovies);
+// GET ALL MOVIES ✅
+router.get("/", getAllMovies);
 
-// ADD MOVIE
-router.post("/", movieController.addMovie);
+// CREATE movie
+router.post("/", createMovie);
 
-// GET ONE MOVIE
-router.get("/:id", movieController.getMovieById);
+// GET movie details
+router.get("/:id", getMovieById);
 
-// UPDATE MOVIE
-router.put("/:id", movieController.updateMovie);
-
-// DELETE MOVIE
-router.delete("/:id", movieController.deleteMovie);
+// RATE movie (logged-in users only)
+router.post("/:id/rate", authMiddleware, rateMovie);
 
 module.exports = router;

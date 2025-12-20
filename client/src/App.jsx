@@ -1,32 +1,29 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import SearchMovies from "./pages/SearchMovies";
 import MovieDetails from "./pages/MovieDetails";
 import Login from "./pages/Login";
-import Signup from "./pages/signup";
 import Favorites from "./pages/Favorites";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+
+// ⚠️ Comment this out if Favorites.jsx doesn't exist yet
+// import Favorites from "./pages/Favorites";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/search" replace />} />
+    <>
+      <Navbar />
 
-      <Route path="/search" element={<SearchMovies />} />
-      <Route path="/movies/:id" element={<MovieDetails />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Routes>
+        <Route path="/movies" element={<SearchMovies />} />
+        <Route path="/movies/:id" element={<MovieDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/favorites" element={<Favorites />} />
 
-      <Route
-        path="/favorites"
-        element={
-          <ProtectedRoute>
-            <Favorites />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        {/* Uncomment ONLY when Favorites page exists */}
+        {/* <Route path="/favorites" element={<Favorites />} /> */}
+      </Routes>
+    </>
   );
 }
 

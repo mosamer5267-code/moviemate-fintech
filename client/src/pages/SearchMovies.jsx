@@ -5,14 +5,16 @@ import api from "../api/axios";
 function SearchMovies() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await api.get("/movies");
-        setMovies(response.data);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
+        const res = await api.get("/movies");
+        setMovies(res.data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load movies");
       } finally {
         setLoading(false);
       }
@@ -21,25 +23,33 @@ function SearchMovies() {
     fetchMovies();
   }, []);
 
-  if (loading) {
-    return <h2>Loading movies...</h2>;
-  }
+  if (loading) return <p>Loading movies...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h1>Search Movies</h1>
+      <h1>Movies</h1>
 
-      <ul>
-        {movies.map(movie => (
-          <li key={movie._id}>
-            <Link to={`/movies/${movie._id}`}>
-              <strong>{movie.title}</strong>
-            </Link>
-            <p>{movie.description}</p>
-            <p>Rating: {movie.rating}</p>
-          </li>
-        ))}
-      </ul>
+      {movies.length === 0 ? (
+        <p>No movies found.</p>
+      ) : (
+        <ul>
+          {movies.map((movie) => (
+            <li key={movie._id}>
+              <Link to={`/movies/${movie._id}`}>
+                <strong>{movie.title}</strong>
+              </Link>
+              <p>{movie.description}</p>
+              <p>
+                ⭐ Average rating:{" "}
+                {movie.averageRating
+                  ? movie.averageRating.toFixed(1)
+                  : "Not rated"}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

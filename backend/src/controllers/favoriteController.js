@@ -22,6 +22,22 @@ exports.addFavorite = async (req, res) => {
   }
 };
 
+// REMOVE FROM FAVORITES ✅
+exports.removeFavorite = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const movieId = req.params.movieId;
+
+    await User.findByIdAndUpdate(userId, {
+      $pull: { favorites: movieId },
+    });
+
+    res.status(200).json({ message: "Movie removed from favorites" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // GET FAVORITES
 exports.getFavorites = async (req, res) => {
   try {
